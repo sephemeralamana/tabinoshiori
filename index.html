@@ -44,9 +44,8 @@ body{margin:0;background:#f5ead4;font-family:"Hiragino Maru Gothic ProN","Yu Got
 </head>
 <body>
 
-<div class="cover">
+<div class="cover" id="cover">
   <img src="https://raw.githubusercontent.com/sephemeralamana/tabinoshiori/refs/heads/main/5F880833-D184-45EE-8A67-FCD5BCC16F2A.png">
-  <button class="start" id="start">今日のページをめくる</button>
 </div>
 
 <div class="hint">ボタンを押すと、今日のページが開きます</div>
@@ -102,7 +101,7 @@ const week=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"][d.getDay()];
 document.getElementById("date").textContent =
 `${d.getFullYear()}.${String(d.getMonth()+1).padStart(2,"0")}.${String(d.getDate()).padStart(2,"0")} ${week}`;
 
-document.getElementById("start").onclick=()=>{
+document.getElementById("cover").onclick=()=>{
   const flip=document.getElementById("flip");
   flip.classList.remove("show");
   void flip.offsetWidth;
