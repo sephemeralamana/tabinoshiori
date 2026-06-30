@@ -7,8 +7,22 @@
 <style>
 *{box-sizing:border-box}
 body{margin:0;background:#f5ead4;font-family:"Hiragino Maru Gothic ProN","Yu Gothic",sans-serif;color:#5f4536}
-.cover{position:relative;max-width:760px;margin:0 auto;background:#f5ead4;min-height:100vh}
-.cover img{width:100%;display:block}
+.cover{
+  position:relative;
+  width:100%;
+  max-width:100%;
+  margin:0 auto;
+  background:#f5ead4;
+  min-height:auto;
+  overflow:hidden;
+}
+
+.cover img{
+  width:100%;
+  height:auto;
+  display:block;
+  object-fit:contain;
+}
 .start{position:absolute;left:50%;top:66.5%;transform:translateX(-50%);width:56%;height:7%;border:0;border-radius:999px;background:transparent;color:transparent;z-index:5}
 .hint{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);z-index:8;background:rgba(65,45,32,.45);color:#fff;padding:8px 14px;border-radius:999px;font-size:12px;backdrop-filter:blur(6px)}
 .flip{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(255,245,220,.35);z-index:12}
