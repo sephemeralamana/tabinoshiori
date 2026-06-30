@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>迷子になろうよ、一緒に。</title>
+<style>
+body{margin:0;font-family:"Hiragino Maru Gothic ProN","Yu Gothic",sans-serif;background:#f8efd9;color:#6b4b3a;text-align:center;overflow-x:hidden}
+.app{min-height:100vh;background:linear-gradient(#8ed8ff,#fff4d8 55%,#f4d3a8);padding:48px 18px}
+.cloud{position:fixed;background:white;border-radius:50px;opacity:.75;animation:cloud 28s linear infinite}
+.c1{width:160px;height:55px;top:90px;left:-180px}.c2{width:120px;height:42px;top:190px;right:-140px;animation-delay:8s}
+@keyframes cloud{to{transform:translateX(120vw)}}
+.title span,.sub span{opacity:0;animation:show .08s forwards}
+@keyframes show{to{opacity:1}}
+h1{font-size:42px;line-height:1.55;margin:80px 0 18px;font-weight:700;color:#6b4b3a;text-shadow:0 2px 0 #fff8}
+.sub{font-size:17px;line-height:1.8;margin-bottom:34px}
+.date{font-size:14px;background:#fff8;border:1px solid #d9b98f;border-radius:999px;padding:8px 16px;display:inline-block}
+.book{width:92%;max-width:430px;height:260px;margin:26px auto;background:#e9d6b8;border:10px solid #8c6b4d;border-radius:18px;box-shadow:0 18px 30px #7b5b3555;position:relative;overflow:hidden}
+.page{position:absolute;inset:14px;background:#fff9e8;border-radius:10px;box-shadow:inset 0 0 18px #d7b98a88;display:flex;align-items:center;justify-content:center;flex-direction:column;transition:.18s;transform-origin:left}
+.page.flip{transform:rotateY(-78deg);opacity:.25}
+.page h2{font-size:34px;margin:0 0 10px;color:#4fa3d8}
+.page small{font-size:13px;color:#9a735c}
+button{border:0;border-radius:999px;background:#61add8;color:white;font-size:20px;font-weight:bold;padding:17px 34px;box-shadow:0 8px 0 #3e86aa;letter-spacing:.04em}
+button:active{transform:translateY(4px);box-shadow:0 4px 0 #3e86aa}
+.result{display:none;max-width:470px;margin:24px auto;background:#fffdf4cc;border-radius:28px;padding:24px;box-shadow:0 12px 25px #7b5b3533;text-align:left}
+.result.show{display:block}
+.result h2{text-align:center;font-size:34px;color:#4fa3d8;margin:6px}
+.card{background:white;border:2px dashed #dfbf8c;border-radius:18px;margin:14px 0;padding:14px 18px;line-height:1.7}
+.card b{color:#7c5a42}
+.petals i{position:fixed;top:-20px;width:12px;height:16px;background:#f6b8bf;border-radius:70% 20% 70% 20%;animation:fall linear forwards;z-index:9}
+@keyframes fall{to{transform:translateY(110vh) rotate(720deg);opacity:.2}}
+.town{margin:30px auto 0;max-width:520px;background:#fff7;border-radius:24px;padding:16px;font-size:14px;line-height:1.8}
+</style>
+</head>
+<body>
+<div class="cloud c1"></div><div class="cloud c2"></div>
+<div class="app">
+  <div class="date" id="date"></div>
+
+  <h1 id="title"></h1>
+  <div class="sub" id="subtitle"></div>
+
+  <div class="book">
+    <div class="page" id="page">
+      <small>海の見える街</small>
+      <h2>今日の旅日記</h2>
+      <small id="pnum">P.00</small>
+    </div>
+  </div>
+
+  <button id="start">📖 今日のページをめくる</button>
+
+  <section class="result" id="result">
+    <h2 id="place"></h2>
+    <p style="text-align:center" id="copy"></p>
+    <div class="card"><b>おすすめスポット</b><br><span id="spot"></span></div>
+    <div class="card"><b>ごほうびグルメ</b><br><span id="food"></span></div>
+    <div class="card"><b>雨の日プラン</b><br><span id="rain"></span></div>
+  </section>
+
+  <div class="town">
+    🍞 パン屋さん：gütiokipänja<br>
+    ☕ カフェ：地球屋<br>
+    🐦 白っぽい青の小鳥が、今日のページを運んできます。
+  </div>
+</div>
+
+<div class="petals" id="petals"></div>
+
+<script>
+const title="迷子になろうよ、\n一緒に。";
+const subtitle="ページをめくれば、今日の旅が始まる。";
+
+function typeText(el,text,start=0,gap=90,pauseAt="、"){
+  el.innerHTML="";
+  let delay=start;
+  [...text].forEach(ch=>{
+    const s=document.createElement("span");
+    s.textContent=ch==="\n"?"\n":ch;
+    s.style.whiteSpace="pre";
+    s.style.animationDelay=delay+"ms";
+    el.appendChild(s);
+    delay += ch===pauseAt ? 650 : gap;
+  });
+}
+typeText(document.getElementById("title"),title,300,95);
+typeText(document.getElementById("subtitle"),subtitle,2300,45);
+
+const d=new Date();
+document.getElementById("date").textContent =
+`${d.getFullYear()}.${String(d.getMonth()+1).padStart(2,"0")}.${String(d.getDate()).padStart(2,"0")}`;
+
+const places=[
+["千代田区","丸の内と皇居外苑をゆっくり散歩","神保町カレー、丸の内カフェ","KITTE・丸ビル・東京駅ギャラリー"],
+["中央区","銀座、日本橋、築地場外をめぐる","築地海鮮、銀座ランチ","GINZA SIX・コレド室町"],
+["港区","東京タワー、麻布台、六本木へ","麻布台カフェ、赤坂ランチ","国立新美術館・麻布台ヒルズ"],
+["新宿区","新宿御苑、神楽坂、都庁展望室","新宿三丁目ごはん、神楽坂カフェ","都庁展望室・映画館"],
+["文京区","根津神社、小石川後楽園、東京ドーム周辺","本郷カフェ、湯島スイーツ","東京ドームシティ・文京シビックセンター"],
+["台東区","浅草、上野、谷中で寄り道","浅草食べ歩き、上野洋食","東京国立博物館・国立科学博物館"],
+["墨田区","スカイツリー、ソラマチ、両国","両国ちゃんこ、ソラマチグルメ","すみだ水族館・東京ソラマチ"],
+["江東区","清澄白河、豊洲、お台場方面","清澄白河カフェ、豊洲海鮮","チームラボプラネッツ・有明ガーデン"],
+["品川区","天王洲アイル、戸越銀座、大井町","戸越銀座食べ歩き","アクアパーク品川"],
+["目黒区","中目黒、自由が丘、目黒川","中目黒カフェ、自由が丘スイーツ","東京都写真美術館"],
+["大田区","羽田空港、蒲田、洗足池","蒲田餃子、羽田空港グルメ","羽田空港ターミナル"],
+["世田谷区","下北沢、三軒茶屋、二子玉川","下北カレー、三茶カフェ","二子玉川ライズ"],
+["渋谷区","渋谷、原宿、代々木公園","奥渋カフェ、原宿クレープ","渋谷スクランブルスクエア"],
+["中野区","中野ブロードウェイ、中野セントラルパーク","中野ラーメン、純喫茶","中野ブロードウェイ"],
+["杉並区","高円寺、阿佐ヶ谷、荻窪","高円寺カフェ、荻窪ラーメン","阿佐ヶ谷パールセンター"],
+["豊島区","池袋、巣鴨、雑司が谷","池袋中華、巣鴨甘味","サンシャイン水族館"],
+["北区","赤羽、王子、飛鳥山公園","赤羽せんべろ、王子カフェ","紙の博物館"],
+["荒川区","日暮里、都電荒川線、谷中寄り道","町中華、日暮里カフェ","日暮里繊維街"],
+["板橋区","大山商店街、赤塚、板橋宿","大山食べ歩き、町中華","板橋区立美術館"],
+["練馬区","石神井公園、大泉学園、としまえん跡地周辺","江古田カフェ、大泉学園ランチ","スタジオツアー東京"],
+["足立区","北千住、西新井大師、舎人公園","北千住飲み屋、ラーメン","北千住ルミネ・マルイ"],
+["葛飾区","柴又、亀有、堀切菖蒲園","柴又草だんご、亀有グルメ","寅さん記念館"],
+["江戸川区","葛西臨海公園、小岩、船堀","小岩グルメ、葛西カフェ","葛西臨海水族園"],
+["東京23区以外","吉祥寺、立川、高尾山、調布","吉祥寺カフェ、深大寺そば","ジブリ美術館・多摩六都科学館"],
+["神奈川県","横浜、鎌倉、江の島、箱根","横浜中華街、鎌倉カフェ","新江ノ島水族館"],
+["埼玉県","川越、大宮、飯能、秩父","川越食べ歩き、武蔵野うどん","鉄道博物館"],
+["千葉県","舞浜、幕張、成田、鴨川","成田うなぎ、海鮮","イクスピアリ・鴨川シーワールド"]
+];
+
+const page=document.getElementById("page");
+document.getElementById("start").onclick=()=>{
+  document.getElementById("result").classList.remove("show");
+  let count=0;
+  const max=18+Math.floor(Math.random()*10);
+  const timer=setInterval(()=>{
+    page.classList.add("flip");
+    setTimeout(()=>page.classList.remove("flip"),100);
+    const n=Math.floor(Math.random()*27)+1;
+    document.getElementById("pnum").textContent="P."+String(n).padStart(2,"0");
+    count++;
+    if(count>=max){
+      clearInterval(timer);
+      const i=Math.floor(Math.random()*places.length);
+      const p=places[i];
+      document.getElementById("pnum").textContent="P."+String(i+1).padStart(2,"0");
+      document.getElementById("place").textContent=p[0];
+      document.getElementById("copy").textContent="今日は、"+p[0]+"のページが開きました。";
+      document.getElementById("spot").textContent=p[1];
+      document.getElementById("food").textContent=p[2];
+      document.getElementById("rain").textContent=p[3];
+      document.getElementById("result").classList.add("show");
+      petals();
+    }
+  },120);
+};
+
+function petals(){
+  const box=document.getElementById("petals");
+  for(let i=0;i<50;i++){
+    const e=document.createElement("i");
+    e.style.left=Math.random()*100+"vw";
+    e.style.animationDuration=(2+Math.random()*3)+"s";
+    e.style.animationDelay=Math.random()*0.5+"s";
+    box.appendChild(e);
+    setTimeout(()=>e.remove(),5200);
+  }
+}
+</script>
+</body>
+</html>
